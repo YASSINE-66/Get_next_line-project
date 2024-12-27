@@ -1,4 +1,27 @@
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
+char *ft_creat_left(char *left, char *buffer, int fd)
+{
+    int check;
+    char *tmp;
+    while(1)
+    {
+        check = read (fd, buffer,BUFFER_SIZE);
+        if (check < 0)
+            return(free (left),left = NULL,NULL);
+        if (check == 0)
+            break;
+        if (!left)
+            left = ft_strdup("");
+        buffer[check] = '\0';
+        tmp = left;
+        left = ft_strjoin(tmp ,buffer);
+        free(tmp);
+        if (ft_strchr(left,'\n') != NULL)
+            break;
+    }
+    
+    return(left);
+}
 char * ft_line(char **line , char *left)
 {
     int i;
@@ -29,31 +52,20 @@ char *get_next_line(int fd)
 {
     static char *left[1024];
     char *buffer;
-    char *tmp;
     char *line;
-    int check;
-    if (fd < 0 || BUFFER_SIZE <= 0)
+    if (fd > 1024)
+        return (NULL);
+    if (fd < 0)
+        return (NULL);
+    if (BUFFER_SIZE <= 0)
         return (free(left[fd]) , left[fd] = NULL ,NULL);
     buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
     if (!buffer)
         return (NULL);
-    while(1)
-    {
-        check = read (fd, buffer,BUFFER_SIZE);
-        if (check < 0)
-            return(free (left[fd]),left[fd] = NULL,NULL);
-        if (check == 0)
-            break;
-        if (!left[fd])
-            left[fd] = ft_strdup("");
-        buffer[check] = '\0';
-        tmp = left[fd];
-        left[fd] = ft_strjoin(tmp ,buffer);
-        free(tmp);
-        if (ft_strchr(left[fd],'\n') != NULL)
-            break;
-    }
+    left[fd] = ft_creat_left(left[fd], buffer, fd);
     free (buffer);
-    left[fd] = ft_line(&line,left[fd]);
+    if (!left[fd])
+        return (NULL);
+    left[fd] = ft_line(&line, left[fd]);
     return (line);
 }

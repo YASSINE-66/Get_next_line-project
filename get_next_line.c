@@ -19,7 +19,7 @@ char *ft_creat_left(char *left, char *buffer, int fd)
         if (ft_strchr(left,'\n') != NULL)
             break;
     }
-    free (buffer);
+    
     return(left);
 }
 char * ft_line(char **line , char *left)
@@ -60,6 +60,7 @@ char *get_next_line(int fd)
     if (!buffer)
         return (NULL);
     left = ft_creat_left(left, buffer, fd);
+    free (buffer);
     if (!left)
         return (NULL);
     left = ft_line(&line, left);
